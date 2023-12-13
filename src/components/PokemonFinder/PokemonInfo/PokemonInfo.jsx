@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "components/PokemonFinder/Loader/Loader";
 import { fetchPokemon } from "configs/imgconfig/pokemonApi";
@@ -10,39 +10,37 @@ import style from "../PokemonInfoItem/PokemonItem.module.css";
 
 
 
-export default class PokemonInfo extends Component {
-    state = {
-        pokemon: null,
-        loading: false,
-    }
-    async componentDidUpdate(prevProps, prevState) {
-            
-        const prevName = prevProps.pokemonName;
-        const nextName = this.props.pokemonName;
+export default function PokemonInfo({ pokemonName }) {
+    const [pokemon, setPokemon] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!pokemonName) {
+            return
+        };
+        
         try {
-            if (prevName !== nextName) {
-
-            this.setState({ loading: true, pokemon: null });
+            setPokemon(null);
+            setLoading(true);
             
 
-            fetchPokemon(nextName)
-            .then(pokemon => this.setState({ pokemon }))
-            .catch(() => {
-            toast.error('Something went wrong. Try the request again');
-            this.setState({ isLoading: false });
-            })
-                .finally(() => this.setState({ loading: false }))
-            }   
+            fetchPokemon(pokemonName)
+                .then(pokemon => {
+                    setPokemon(pokemon)
+                })
+                .catch(() => {
+                    toast.error('Something went wrong. Try the request again');
+                    setLoading(false);
+                })
+                .finally(() => setLoading(false))
 
         } catch (error) {
             toast.error('Something went wrong. Try the request again');
-            this.setState({ isLoading: false });
+            setLoading(false);
         }
 
-    }
-    render() {
-        const { pokemon, loading } = this.state;
-        const { pokemonName} = this.props;
+    }, [pokemonName]);
+
         return (
             <div>
                 {loading && <Loader />} 
@@ -53,6 +51,4 @@ export default class PokemonInfo extends Component {
 
             </div>
         )
-            
-    }
-}
+};

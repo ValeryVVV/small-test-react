@@ -1,35 +1,24 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 import SearchPokemonBar from "./PokemonFinder/SearchPokemonBar/SearchPokemonBar";
 import PokemonInfo from "./PokemonFinder/PokemonInfo/PokemonInfo";
 
 
-class App extends Component { 
-    state = {
-        pokemonName: ''
-    };
-    
+export default function App() { 
+    const [pokemonName, setPokemonName] = useState('');    
 
-    handleFormSubmit = pokemonName => {
-        this.setState({ pokemonName, images: [], loadMore: false })
-
+    const handleFormSubmit = pokemonName => {
+        setPokemonName(pokemonName);
     };
 
-    render() {
-        const { pokemonName } = this.state;
         return (
             <>
-                <SearchPokemonBar onSubmit={this.handleFormSubmit} />
+                <SearchPokemonBar onSubmit={handleFormSubmit} />
                 
                 <PokemonInfo pokemonName={pokemonName} />
                 
                 <ToastContainer autoClose={3000} />
             </>
         )
-
-    }
 };
-
-
-export default App;
